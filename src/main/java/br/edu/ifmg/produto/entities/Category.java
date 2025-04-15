@@ -9,7 +9,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
-import java.util.Objects;
+
+import br.edu.ifmg.produto.dtos.CategoryDTO;
 
 @Entity
 @Table(name = "tb_category")
@@ -33,6 +34,11 @@ public class Category {
     
     public Category(long l, String string) {
         //TODO Auto-generated constructor stub
+    }
+
+    public Category(CategoryDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
     }
 
     // get set
