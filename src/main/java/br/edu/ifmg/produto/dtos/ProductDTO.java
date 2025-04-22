@@ -22,18 +22,26 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name ="tb_product")
-public class ProductDTO {
+public class ProductDTO extends RepresentationModel<ProductDTO> {
+
+    @Schema(description = "Database generated Id product")
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "Product name")
     private String name;
+    @Schema(description = "Detailed description of the product")
     private String description;
+    @Schema(description = "Product price")
     private double price;
+    @Schema(description = "Product URL of image")
     private String imageUrl;
 
     private Instant createdAt;
     private Instant updatedAt;
 
+    @Schema(description = "Product categories (one or more)")
     private Set<CategoryDTO> categories = new HashSet<>();
 
     public ProductDTO() {}

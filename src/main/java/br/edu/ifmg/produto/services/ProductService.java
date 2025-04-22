@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import br.edu.ifmg.produto.dtos.ProductDTO;
 import br.edu.ifmg.produto.entities.Category;
@@ -27,7 +29,9 @@ public class ProductService {
 
         Page<Product> list = productRepository.findAll(pageable);
 
-        return list.map(product -> new ProductDTO(product));
+        return list.map(product -> new ProductDTO(product)
+            .add(linkTo(methodOn(ProductResource.class).findAll(null)).withSelfRel())
+            .add(linkTo(methodOn(ProductResource.class).findById(product.getId())).withSelfRel("Get a product")));
     }
 
     @Transactional(readOnly = true)
@@ -37,7 +41,11 @@ public class ProductService {
 
         Product product = obj.orElseThrow(() -> new ResourceNotFound(" Product not found " + id));
     
-        return new ProductDTO(product);
+        return new ProductDTO(product)
+            .add( linkTo().withSelfRel())
+            .add( linkTo().withSelfRel("All products"))
+            .add( linkTo().withSelfRel("Update product"))
+            .add( linkTo().withSelfRel("Delete product"));
     }
 
     @Transactional
