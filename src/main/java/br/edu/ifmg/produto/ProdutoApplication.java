@@ -3,7 +3,8 @@ package br.edu.ifmg.produto;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+
+@SpringBootApplication 	
 public class ProdutoApplication {
 
 	public static void main(String[] args) {
