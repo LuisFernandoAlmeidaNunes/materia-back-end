@@ -1,0 +1,16 @@
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\config\OpenApiConfig.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\dtos\CategoryDTO.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\dtos\ProductDTO.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\entities\Category.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\entities\Product.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\ProdutoApplication.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\repositories\CategoryRepository.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\repositories\ProductRepository.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\resources\CategoryResource.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\resources\exceptions\ResourceExceptionListener.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\resources\exceptions\StandardError.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\resources\ProductResource.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\services\CategoryService.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\services\exceptions\DatabaseException.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\services\exceptions\ResourceNotFound.java
+C:\Users\Usuario\Desktop\faculdade\Back-end\src\main\java\br\edu\ifmg\produto\services\ProductService.java

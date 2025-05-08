@@ -1,50 +1,33 @@
 package br.edu.ifmg.produto.dtos;
 
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.hibernate.annotations.ManyToAny;
-import org.springframework.boot.context.properties.bind.Name;
-
 import br.edu.ifmg.produto.entities.Category;
 import br.edu.ifmg.produto.entities.Product;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.hateoas.RepresentationModel;
 
-@Entity
-@Table(name ="tb_product")
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+
 public class ProductDTO extends RepresentationModel<ProductDTO> {
 
-    @Schema(description = "Database generated Id product")
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Database generated ID product")
     private Long id;
     @Schema(description = "Product name")
     private String name;
-    @Schema(description = "Detailed description of the product")
+    @Schema(description = "A detailed description of the product")
     private String description;
     @Schema(description = "Product price")
     private double price;
-    @Schema(description = "Product URL of image")
+    @Schema(description = "Product url of the image")
     private String imageUrl;
-
-    private Instant createdAt;
-    private Instant updatedAt;
-
     @Schema(description = "Product categories (one or more)")
     private Set<CategoryDTO> categories = new HashSet<>();
 
-    public ProductDTO() {}
+    public ProductDTO() {
+
+    }
 
     public ProductDTO(Long id, String name, String description, double price, String imageUrl) {
         this.id = id;
@@ -60,8 +43,7 @@ public class ProductDTO extends RepresentationModel<ProductDTO> {
         this.description = entity.getDescription();
         this.price = entity.getPrice();
         this.imageUrl = entity.getImageUrl();
-
-        entity.getCategories().stream().forEach(c -> this.categories.add(new CategoryDTO(c)));
+        entity.getCategories().forEach(c -> this.categories.add(new CategoryDTO(c)));
     }
 
     public ProductDTO(Product product, Set<Category> categories) {
@@ -118,38 +100,25 @@ public class ProductDTO extends RepresentationModel<ProductDTO> {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (!(o instanceof ProductDTO that)) return false;
+        return Objects.equals(id, that.id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ProductDTO other = (ProductDTO) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
     @Override
     public String toString() {
-        return "ProductDTO [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
-                + ", imageUrl=" + imageUrl + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", categories="
-                + categories + "]";
+        return "ProductDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", categories=" + categories +
+                '}';
     }
-
-
-
-    
 }

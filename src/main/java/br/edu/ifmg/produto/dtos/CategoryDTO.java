@@ -7,14 +7,13 @@ public class CategoryDTO {
     private Long id;
     private String name;
 
-    public CategoryDTO(Long id, String name){
-        this.id = id;
-        this.name = name;
+    public CategoryDTO() {
+
     }
 
-    public CategoryDTO(Category entity){
-        this.id = entity.getId();
-        this.name = entity.getName();
+    public CategoryDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -33,9 +32,16 @@ public class CategoryDTO {
         this.name = name;
     }
 
+    public CategoryDTO(Category entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+    }
+
     @Override
     public String toString() {
-        return "CategoryDTO [id=" + id + ", name=" + name + "]";
+        return "CategoryDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
-    
 }

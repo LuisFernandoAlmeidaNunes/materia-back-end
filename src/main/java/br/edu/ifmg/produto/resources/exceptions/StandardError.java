@@ -1,23 +1,24 @@
-package br.edu.ifmg.produto.resouces.exceptions;
+package br.edu.ifmg.produto.resources.exceptions;
 
 import java.time.Instant;
 
-public class StandartError {
+public class StandardError {
 
     private Instant timestamp;
     private Integer status;
     private String error;
-    private String mesage;
+    private String message;
     private String path;
 
-    public StandartError() { 
+    public StandardError() {
+
     }
 
-    public StandartError(Instant timestamp, Integer status, String error, String mesage, String path) {
+    public StandardError(Instant timestamp, Integer status, String error, String message, String path) {
         this.timestamp = timestamp;
         this.status = status;
         this.error = error;
-        this.mesage = mesage;
+        this.message = message;
         this.path = path;
     }
 
@@ -45,12 +46,12 @@ public class StandartError {
         this.error = error;
     }
 
-    public String getMesage() {
-        return mesage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMesage(String mesage) {
-        this.mesage = mesage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getPath() {
@@ -60,5 +61,4 @@ public class StandartError {
     public void setPath(String path) {
         this.path = path;
     }
-
 }
