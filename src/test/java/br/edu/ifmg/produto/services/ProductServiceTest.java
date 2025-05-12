@@ -21,10 +21,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+public class ProductServiceTest {
 
     @InjectMocks
     public ProductService productService;
@@ -41,6 +42,7 @@ class ProductServiceTest {
         existingId = 1L;
         nonExistingId = 2L;
         Product product = Factory.createProduct();
+        product.setId(1L);
         page = new PageImpl<>(List.of(product));
     }
 
@@ -78,13 +80,24 @@ class ProductServiceTest {
 
         when(productRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
 
-        Pageable pagina = PageRequest.of(0, 10);
-        Page<ProductDTO> result = productService.findAll(pagina);
+        Pageable page = PageRequest.of(0, 10);
+        Page<ProductDTO> result = productService.findAll(page);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.getContent().getFirst().getId());
-        verify(productRepository, times(1)).findAll(pagina);
+        verify(productRepository, times(1)).findAll(page);
 
     }
 
+    @Test
+    @DisplayName("Verificando se findAll retorna os dados paginados")
+    void findByIdShoudReturnProductWhenIdExists() {
+        Product product = Factory.createProduct();
+        product.setId(1L);
+        when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
+        ProductDTO dto = productService.findById(existingId);
+        Assertions.assertNotNull(dto);
+        Assertions.assertEquals(product.getId(), dto.getId());
+        verify(productRepository, times(1)).findById(existingId);
+    }
 }

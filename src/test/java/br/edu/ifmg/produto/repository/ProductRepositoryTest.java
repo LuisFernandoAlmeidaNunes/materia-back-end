@@ -18,7 +18,7 @@ public class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
-    private Long existingId;
+    private long existingId;
 
     @BeforeEach
     void setUp() throws  Exception {

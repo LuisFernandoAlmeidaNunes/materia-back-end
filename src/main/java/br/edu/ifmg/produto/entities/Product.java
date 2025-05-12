@@ -13,7 +13,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Column(columnDefinition = "TEXT")
     private String description;
     private double price;
@@ -31,7 +33,6 @@ public class Product {
     private Set<Category> categories = new HashSet<>();
 
     public Product() {
-
     }
 
     public Product(Long id, String name, String description, double price, String imageUrl) {

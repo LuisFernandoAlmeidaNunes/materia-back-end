@@ -12,11 +12,13 @@ public class Factory {
         p.setPrice(5000);
         p.setImageUrl("https://img.com/iphonexxx.jpg");
         p.getCategories().add(new Category(60L, "News"));
+        System.out.println("Id do produto factory: " + p.getId());
         return p;
     }
 
     public static ProductDTO createProductDTO() {
         Product p = createProduct();
+        ProductDTO dto = new ProductDTO(p);
         return new ProductDTO(p);
     }
 
