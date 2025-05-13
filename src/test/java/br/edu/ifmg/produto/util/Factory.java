@@ -11,8 +11,8 @@ public class Factory {
         p.setName("IPhone XXX");
         p.setPrice(5000);
         p.setImageUrl("https://img.com/iphonexxx.jpg");
-        p.getCategories().add(new Category(60L, "News"));
-        System.out.println("Id do produto factory: " + p.getId());
+        p.getCategories().add(new Category(1L, "Livros"));
+//        System.out.println("Id do produto factory: " + p.getId());
         return p;
     }
 
