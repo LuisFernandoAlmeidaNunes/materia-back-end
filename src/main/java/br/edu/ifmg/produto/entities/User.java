@@ -92,6 +92,15 @@ public class User {
         return roles;
     }
 
+    public void  addRole(Role role) {
+        roles.add(role);
+    }
+
+    public boolean hasRole(String roleName) {
+        return !roles.stream().filter(
+                r -> r.getAuthority().equals(roleName)).toList().isEmpty();
+    }
+
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }

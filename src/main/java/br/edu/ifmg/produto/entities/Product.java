@@ -1,6 +1,10 @@
 package br.edu.ifmg.produto.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -14,10 +18,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Schema(description = "Product name")
+    @Size(min = 3, max = 255, message = "Deve ter entre 3 a 255 caracteres")
     private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
+    @Positive(message = "Preço deve ter um valor positivo")
     private double price;
     private String imageUrl;
 
@@ -30,6 +37,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    @NotEmpty(message = "Produto deve ter ao menos uma categoria")
     private Set<Category> categories = new HashSet<>();
 
     public Product() {
