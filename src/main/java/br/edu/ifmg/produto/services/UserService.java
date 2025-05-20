@@ -1,17 +1,22 @@
 package br.edu.ifmg.produto.services;
 
+import br.edu.ifmg.produto.dtos.ProductDTO;
 import br.edu.ifmg.produto.dtos.RoleDTO;
 import br.edu.ifmg.produto.dtos.UserDTO;
 import br.edu.ifmg.produto.dtos.UserInsertDTO;
+import br.edu.ifmg.produto.entities.Product;
 import br.edu.ifmg.produto.entities.Role;
 import br.edu.ifmg.produto.entities.User;
 import br.edu.ifmg.produto.repositories.RoleRepository;
 import br.edu.ifmg.produto.repositories.UserRepository;
+import br.edu.ifmg.produto.resources.ProductResource;
 import br.edu.ifmg.produto.services.exceptions.ResourceNotFound;
-import ch.qos.logback.classic.encoder.JsonEncoder;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +29,12 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public Page<UserDTO> findAll(Pageable pageable) {
@@ -56,7 +65,7 @@ public class UserService {
 
     }
 
-    private void copyDtoToEntity(UserInsertDTO dto, User entity) {
+    private void copyDtoToEntity(UserDTO dto, User entity) {
 
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
@@ -70,6 +79,32 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public UserDTO update(Long id, UserDTO dto) {
+        try {
+            User entity = repository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
+            entity = repository.save(entity);
+            return new UserDTO(entity);
+        }
+        catch (EntityNotFoundException e) {
+            throw new ResourceNotFound("User not found " + id);
+        }
 
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if(!repository.existsById(id)) {
+            throw new ResourceNotFound("User not found");
+        }
+
+        try {
+            repository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new ResourceNotFound("Integrity violation");
+        }
+    }
 
 }

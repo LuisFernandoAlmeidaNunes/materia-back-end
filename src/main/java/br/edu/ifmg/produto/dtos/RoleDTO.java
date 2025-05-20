@@ -1,10 +1,16 @@
 package br.edu.ifmg.produto.dtos;
 
 import br.edu.ifmg.produto.entities.Role;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.Objects;
 
 public class RoleDTO {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String authority;

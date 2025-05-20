@@ -1,7 +1,6 @@
 package br.edu.ifmg.produto.resources;
 
 import br.edu.ifmg.produto.dtos.ProductDTO;
-import br.edu.ifmg.produto.entities.Product;
 import br.edu.ifmg.produto.util.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.MediaType;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,7 +35,7 @@ public class ProductResourcesITest {
     private Long nonExistingId;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         existingId = 1L;
         nonExistingId = 2000L;
     }
@@ -108,7 +107,7 @@ public class ProductResourcesITest {
     @Test
     public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception{
 
-        ResultActions result =  mockMvc.perform(delete("/product/{id}",nonExistingId).contentType(MediaType.APPLICATION_JSON));
+        ResultActions result =  mockMvc.perform(delete("/product/{id}",nonExistingId));
 
         result.andExpect(status().isNotFound());
 
