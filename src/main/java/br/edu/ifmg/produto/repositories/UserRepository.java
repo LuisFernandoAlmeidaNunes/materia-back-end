@@ -1,15 +1,33 @@
 package br.edu.ifmg.produto.repositories;
 import br.edu.ifmg.produto.entities.Role;
 import br.edu.ifmg.produto.entities.User;
+import br.edu.ifmg.produto.projections.UserDetailsProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.awt.print.Pageable;
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
     User findByEmailAndPassword(String email, String password);
+
+    @Query(
+            nativeQuery = true,
+            value = """
+                        SELECT u.email as username,
+                               u.password,
+                               r.id as roleid,
+                               r.authority
+                        FROM tb_user u
+                        INNER JOIN tb_user_role ur ON u.id = ur.user_id
+                        INNER JOIN tb_role r ON r.id = ur.role_id 
+                        WHERE u.email = :email
+"""
+    )
+    List<UserDetailsProjection> searchUserAndRoleByEmail(String email);
 }

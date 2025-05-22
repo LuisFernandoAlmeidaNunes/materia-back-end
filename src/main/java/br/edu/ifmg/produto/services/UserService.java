@@ -7,6 +7,7 @@ import br.edu.ifmg.produto.dtos.UserInsertDTO;
 import br.edu.ifmg.produto.entities.Product;
 import br.edu.ifmg.produto.entities.Role;
 import br.edu.ifmg.produto.entities.User;
+import br.edu.ifmg.produto.projections.UserDetailsProjection;
 import br.edu.ifmg.produto.repositories.RoleRepository;
 import br.edu.ifmg.produto.repositories.UserRepository;
 import br.edu.ifmg.produto.resources.ProductResource;
@@ -16,16 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
@@ -107,4 +112,20 @@ public class UserService {
         }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<UserDetailsProjection> result = repository.searchUserAndRoleByEmail(username);
+
+        if (result.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        User user = new User();
+        user.setEmail(result.get(0).getUsername());
+        user.setPassword(result.get(0).getPassword());
+        for (UserDetailsProjection p : result) {
+            user.addRole(new Role(p.getRoleId(), p.getAuthority()));
+        }
+        return user;
+    }
 }
