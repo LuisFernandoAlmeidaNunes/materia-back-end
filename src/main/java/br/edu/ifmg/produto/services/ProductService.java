@@ -7,6 +7,8 @@ import br.edu.ifmg.produto.repositories.ProductRepository;
 
 import br.edu.ifmg.produto.resources.ProductResource;
 import br.edu.ifmg.produto.services.exceptions.ResourceNotFound;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,8 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -31,6 +37,21 @@ public class ProductService {
         return list.map(product -> new ProductDTO(product)
                 .add(linkTo(methodOn(ProductResource.class).findAll(null)).withSelfRel())
                 .add(linkTo(methodOn(ProductResource.class).findById(product.getId())).withRel("Get a product")));
+    }
+    @GetMapping(value = "/paged", produces = "application/json")
+    @Operation(
+            description = "Get all products paged",
+            summary = "Get all products paged",
+            responses = {
+                    @ApiResponse(description = "ok", responseCode = "200"),
+            }
+    )
+    public ResponseEntity<Page<ProductDTO>> findAllPaged(Pageable pageable,
+                                                         @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
+                                                         @RequestParam(value = "name", defaultValue = "") String name
+    ) {
+        Page<ProductDTO> products = productService.findAll(pageable);
+        return ResponseEntity.ok().body(products);
     }
 
     @Transactional(readOnly = true)

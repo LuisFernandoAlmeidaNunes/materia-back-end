@@ -2,6 +2,7 @@ package br.edu.ifmg.produto.resources;
 
 import br.edu.ifmg.produto.dtos.ProductDTO;
 import br.edu.ifmg.produto.util.Factory;
+import br.edu.ifmg.produto.util.TokenUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class ProductResourcesITest {
     private Long existingId;
     private Long nonExistingId;
 
+    @Autowired
+    private TokenUtil tokenUtil;
+    private String username;
+    private String password;
+    private String token;
+
     @BeforeEach
     void setUp() {
         existingId = 1L;
@@ -61,7 +68,7 @@ public class ProductResourcesITest {
 
         String descriptionExpected = dto.getDescription();
 
-        ResultActions result =  mockMvc.perform(put("/product/{id}",existingId).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+        ResultActions result =  mockMvc.perform(put("/product/{id}",existingId).header("Authorization", "Bearer "+ token).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk());
         result.andExpect(jsonPath("$.id").value(existingId));
         result.andExpect(jsonPath("$.name").value(nameExpected));
@@ -74,7 +81,7 @@ public class ProductResourcesITest {
 
         String dtoJson = objectMapper.writeValueAsString(dto);
 
-        ResultActions result =  mockMvc.perform(put("/product/{id}",nonExistingId).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+        ResultActions result =  mockMvc.perform(put("/product/{id}",nonExistingId).header("Authorization", "Bearer "+ token).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
     }
@@ -89,7 +96,7 @@ public class ProductResourcesITest {
         String nameExpected = dto.getName();
         Long IdExpected = 26L;
 
-        ResultActions result =  mockMvc.perform(post("/product",existingId).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+        ResultActions result =  mockMvc.perform(post("/product",existingId).header("Authorization", "Bearer "+ token).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
         result.andExpect(status().isCreated());
         result.andExpect(jsonPath("$.id").value(IdExpected));
         result.andExpect(jsonPath("$.name").value(nameExpected));
@@ -99,7 +106,7 @@ public class ProductResourcesITest {
     @Test
     public void deleteShouldReturnNoContentWhenIdExists() throws Exception{
 
-        ResultActions result =  mockMvc.perform(delete("/product/{id}",existingId));
+        ResultActions result =  mockMvc.perform(delete("/product/{id}",existingId).header("Authorization", "Bearer "+ token));
         result.andExpect(status().isNoContent());
 
     }
@@ -107,7 +114,7 @@ public class ProductResourcesITest {
     @Test
     public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception{
 
-        ResultActions result =  mockMvc.perform(delete("/product/{id}",nonExistingId));
+        ResultActions result =  mockMvc.perform(delete("/product/{id}",nonExistingId).header("Authorization", "Bearer "+ token));
 
         result.andExpect(status().isNotFound());
 
