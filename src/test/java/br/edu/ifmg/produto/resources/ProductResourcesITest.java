@@ -84,6 +84,7 @@ public class ProductResourcesITest {
         ResultActions result =  mockMvc.perform(put("/product/{id}",nonExistingId).header("Authorization", "Bearer "+ token).content(dtoJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
+
     }
 
     @Test
