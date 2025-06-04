@@ -4,12 +4,11 @@ import br.edu.ifmg.produto.dtos.ProductDTO;
 import br.edu.ifmg.produto.dtos.ProductListDTO;
 import br.edu.ifmg.produto.entities.Category;
 import br.edu.ifmg.produto.entities.Product;
+import br.edu.ifmg.produto.projections.ProductProjection;
 import br.edu.ifmg.produto.repositories.ProductRepository;
 
 import br.edu.ifmg.produto.resources.ProductResource;
 import br.edu.ifmg.produto.services.exceptions.ResourceNotFound;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,17 +17,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -42,21 +37,6 @@ public class ProductService {
         return list.map(product -> new ProductDTO(product)
                 .add(linkTo(methodOn(ProductResource.class).findAll(null)).withSelfRel())
                 .add(linkTo(methodOn(ProductResource.class).findById(product.getId())).withRel("Get a product")));
-    }
-    @GetMapping(value = "/paged", produces = "application/json")
-    @Operation(
-            description = "Get all products paged",
-            summary = "Get all products paged",
-            responses = {
-                    @ApiResponse(description = "ok", responseCode = "200"),
-            }
-    )
-    public ResponseEntity<Page<ProductDTO>> findAllPaged(Pageable pageable,
-                                                         @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
-                                                         @RequestParam(value = "name", defaultValue = "") String name
-    ) {
-        Page<ProductDTO> products = productService.findAll(pageable);
-        return ResponseEntity.ok().body(products);
     }
 
     @Transactional(readOnly = true)
@@ -123,16 +103,19 @@ public class ProductService {
     }
 
     public Page<ProductListDTO> findAllPaged(String name, String categoryId, Pageable pageable) {
+
         List<Long> categoriesId = null;
-
         if (!categoryId.equals("0"))
-            categoriesId = Arrays.stream(categoryId.split(",")).map(id -> Long.parseLong(id)).toList();
+            categoriesId = Arrays.stream(categoryId.split(","))
+                    .map(id -> Long.parseLong(id))
+                    .toList();
 
-        Page<ProductListDTO> page = productRepository.searchProducts(categoriesId, name, pageable);
+        Page<ProductProjection> page = productRepository.searchProducts(categoriesId, name, pageable);
 
-        Page<ProductListDTO> dtos = page.stream().map(p -> new ProductListDTO(p)).toList();
+        List<ProductListDTO> dtos = page.stream()
+                .map(p -> new ProductListDTO(p))
+                .toList();
 
         return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
-
 }

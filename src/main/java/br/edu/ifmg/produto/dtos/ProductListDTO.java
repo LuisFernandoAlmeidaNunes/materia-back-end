@@ -1,14 +1,13 @@
 package br.edu.ifmg.produto.dtos;
 
-import br.edu.ifmg.produto.entities.Category;
 import br.edu.ifmg.produto.entities.Product;
 import br.edu.ifmg.produto.projections.ProductProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 
 public class ProductListDTO extends RepresentationModel<ProductListDTO> {
@@ -16,17 +15,20 @@ public class ProductListDTO extends RepresentationModel<ProductListDTO> {
     @Schema(description = "Database generated ID product")
     private Long id;
     @Schema(description = "Product name")
+    @Size(min = 3, max = 255, message = "Dever ter entre 3 e 255 caracteres")
     private String name;
     @Schema(description = "Product price")
+    @Positive(message = "Preço deve ser positivo")
     private double price;
     @Schema(description = "Product url of the image")
     private String imageUrl;
+
 
     public ProductListDTO() {
 
     }
 
-    public ProductListDTO(Long id, String name, String description, double price, String imageUrl) {
+    public ProductListDTO(Long id, String name, double price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -63,7 +65,6 @@ public class ProductListDTO extends RepresentationModel<ProductListDTO> {
         this.name = name;
     }
 
-
     public double getPrice() {
         return price;
     }
@@ -80,7 +81,6 @@ public class ProductListDTO extends RepresentationModel<ProductListDTO> {
         this.imageUrl = imageUrl;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof ProductListDTO that)) return false;
@@ -94,13 +94,11 @@ public class ProductListDTO extends RepresentationModel<ProductListDTO> {
 
     @Override
     public String toString() {
-        return "ProductDTO{" +
+        return "ProductListDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
-
-
 }

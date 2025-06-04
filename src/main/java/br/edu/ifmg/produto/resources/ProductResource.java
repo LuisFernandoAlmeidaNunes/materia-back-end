@@ -3,7 +3,6 @@ package br.edu.ifmg.produto.resources;
 
 import br.edu.ifmg.produto.dtos.ProductDTO;
 import br.edu.ifmg.produto.dtos.ProductListDTO;
-import br.edu.ifmg.produto.entities.Product;
 import br.edu.ifmg.produto.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -52,7 +51,7 @@ public class ProductResource {
                                                                  @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
                                                                  @RequestParam(value = "name", defaultValue = "") String name
     ) {
-        Page<ProductListDTO> products = productService.findAll(pageable);
+        Page<ProductListDTO> products = productService.findAllPaged(name, categoryId, pageable);
         return ResponseEntity.ok().body(products);
     }
 

@@ -1,6 +1,0 @@
-br\edu\ifmg\produto\ProdutoApplicationTests.class
-br\edu\ifmg\produto\resources\ProductResourcesITest.class
-br\edu\ifmg\produto\services\ProductServiceTest.class
-br\edu\ifmg\produto\util\Factory.class
-br\edu\ifmg\produto\repository\ProductRepositoryTest.class
-br\edu\ifmg\produto\resources\ProductResourcesTest.class
