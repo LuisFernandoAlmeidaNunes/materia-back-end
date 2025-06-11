@@ -2,7 +2,6 @@ package br.edu.ifmg.produto.services;
 
 import br.edu.ifmg.produto.dtos.EmailDTO;
 import br.edu.ifmg.produto.services.exceptions.EmailException;
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
@@ -19,10 +18,7 @@ public class EmailService {
 
     private JavaMailSender mailSender;
 
-    @Autowired
-    private EmailValidator emailValidator;
-
-    public void sendEmail(EmailDTO dto) {
+    public void sendEmail(EmailDTO emailDTO) {
 
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
@@ -30,14 +26,16 @@ public class EmailService {
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailFrom);
-            message.setTo(dto.getTo());
-            message.setSubject(dto.getSubject());
-            message.setText(dto.getBody());
+            message.setTo(emailDTO.getTo());
+            message.setSubject(emailDTO.getSubject());
+            message.setText(emailDTO.getBody());
             mailSender.send(message);
 
-        } catch (MailSendException e){
+        } catch (MailSendException e) {
             throw new EmailException(e.getMessage());
         }
+
     }
+
 
 }
