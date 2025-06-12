@@ -1,6 +1,6 @@
 /*! SET storage_engine=INNODB */;
-create table tb_category (created_at TIMESTAMP   null, id bigint not null auto_increment, update_at TIMESTAMP   null, name varchar(255), primary key (id)) engine=InnoDB;
-create table tb_product (price float(53) not null, created_at datetime(6), id bigint not null auto_increment, update_at datetime(6), description TEXT, image_url varchar(255), name varchar(255), primary key (id)) engine=InnoDB;
+create table tb_category (created_at TIMESTAMP   null, id bigint not null auto_increment, updated_at TIMESTAMP   null, name varchar(255), primary key (id)) engine=InnoDB;
+create table tb_product (price float(53) not null, created_at datetime(6), id bigint not null auto_increment, updated_at datetime(6), description TEXT, image_url varchar(255), name varchar(255), primary key (id)) engine=InnoDB;
 create table tb_product_category (category_id bigint not null, product_id bigint not null, primary key (category_id, product_id)) engine=InnoDB;
 create table tb_role (id bigint not null auto_increment, authority varchar(255), primary key (id)) engine=InnoDB;
 create table tb_user (id bigint not null auto_increment, email varchar(255), first_name varchar(255), last_name varchar(255), password varchar(255), primary key (id)) engine=InnoDB;
