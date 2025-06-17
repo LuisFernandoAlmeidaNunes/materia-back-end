@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: br.edu.ifmg.produto.ProdutoApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.07 s -- in br.edu.ifmg.produto.ProdutoApplicationTests

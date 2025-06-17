@@ -2,9 +2,7 @@ package br.edu.ifmg.produto.resources;
 
 import br.edu.ifmg.produto.dtos.NewPasswordDTO;
 import br.edu.ifmg.produto.dtos.RequestTokenDTO;
-import br.edu.ifmg.produto.entities.PasswordRecover;
-import br.edu.ifmg.produto.entities.User;
-import br.edu.ifmg.produto.repositories.PasswordPrecoverRepository;
+import br.edu.ifmg.produto.repositories.PasswordRecoverRepository;
 import br.edu.ifmg.produto.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-import java.util.List;
-
 @RestController
 @RequestMapping(value="/auth")
 public class AuthResource {
@@ -26,7 +21,7 @@ public class AuthResource {
     private AuthService authService;
 
     @Autowired
-    PasswordPrecoverRepository passwordPrecoverRepository;
+    PasswordRecoverRepository passwordRecoverRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,13 +36,7 @@ public class AuthResource {
 
     @PostMapping(value = "new-password")
     public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO dto) {
-
-        List<PasswordRecover> list = passwordPrecoverRepository.searchValidToken(dto.getToken(), Instant.now());
-
-        User user = userRepository.findByEmail(list.getFirst().getEmail());
-
-
-
+        authService.savePassword(dto);
         return ResponseEntity.noContent().build();
     }
 }

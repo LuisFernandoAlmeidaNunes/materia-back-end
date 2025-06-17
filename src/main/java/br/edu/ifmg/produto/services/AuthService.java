@@ -5,16 +5,19 @@ import br.edu.ifmg.produto.dtos.NewPasswordDTO;
 import br.edu.ifmg.produto.dtos.RequestTokenDTO;
 import br.edu.ifmg.produto.entities.PasswordRecover;
 import br.edu.ifmg.produto.entities.User;
-import br.edu.ifmg.produto.repositories.PasswordPrecoverRepository;
+import br.edu.ifmg.produto.repositories.PasswordRecoverRepository;
 import br.edu.ifmg.produto.repositories.UserRepository;
 import br.edu.ifmg.produto.services.exceptions.ResourceNotFound;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
+
 
 @Service
 public class AuthService {
@@ -26,41 +29,55 @@ public class AuthService {
     private String uri;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private EmailService emailService;
 
     @Autowired
-    private PasswordPrecoverRepository passwordPrecoverRepository;
+    private PasswordRecoverRepository passwordRecoverRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     public void createRecoverToken(RequestTokenDTO dto) {
-
+        // pelo email gerar um token
         User user = userRepository.findByEmail(dto.getEmail());
 
         if (user == null) {
             throw new ResourceNotFound("Email not found");
         }
 
+        // gerar um token
         String token = UUID.randomUUID().toString();
 
+        // Inserir no BD
         PasswordRecover passwordRecover = new PasswordRecover();
         passwordRecover.setToken(token);
         passwordRecover.setEmail(user.getEmail());
-        passwordRecover.setExpiration(Instant.now().plusSeconds(tokenMinutes * 60));
-        passwordPrecoverRepository.save(passwordRecover);
+        passwordRecover.setExpiration(Instant.now().plusSeconds(tokenMinutes * 60L));
+        passwordRecoverRepository.save(passwordRecover);
 
-        String body = "Acesse o link para definir uma nova senha (Válido por "+ tokenMinutes + ")" + "\n\n " + uri + token;
-
-        emailService.sendEmail(new EmailDTO(user.getEmail(), "Recuperacao de senha", body));
+        // enviar o email com o token incluído no corpo do email
+        String body = "Acesse o link para definir uma nova senha: (válido por "
+                + tokenMinutes + " minutos)"
+                + "\n\n" + uri + token;
+        emailService.sendEmail(new EmailDTO(user.getEmail(), "Recuperação de Senha", body));
     }
 
-    public void saveNewPassword(@Valid NewPasswordDTO dto) {
 
+    public void savePassword(@Valid NewPasswordDTO dto) {
+        List<PasswordRecover> list = passwordRecoverRepository.searchValidToken(dto.getToken(), Instant.now());
 
+        if (list.isEmpty()) {
+            throw new ResourceNotFound("Token not found");
+        }
 
+        User user = userRepository.findByEmail(list.getFirst().getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
     }
 }
